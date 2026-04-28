@@ -5,7 +5,6 @@
 uint8_t spi_rcv_data(uint8_t data)
 {
     spi_pins_t spi_p;
-
     uint8_t received_data = 0;
 
     for(int i = 7; i >= 0; i--)
@@ -83,21 +82,23 @@ void spi_read_addr(uint32_t addr, uint8_t *buff, uint8_t len, uint8_t r_cmd)
     gpio_set_level((gpio_num_t)pins_p.cs, 1);
 }
 
-void spi_dumpf_cmd(uint32_t ic_capacity, uint8_t chunk_size, uint8_t r_cmd)
-{
+void spi_dumpf_cmd(uint32_t ic_capacity, uint8_t r_cmd)
+{   
+    uint8_t chunk_size = 16;
     uint8_t chunk[chunk_size];
 
     for(uint32_t addr = 0; addr < ic_capacity; addr += chunk_size)
     {
         spi_read_addr(addr, chunk, chunk_size, r_cmd);
 
-        printf("%06X: ", (unsigned int)addr);
+        printf("%06X: ", (uint32_t)addr);
         for(int i = 0; i < chunk_size; i++)
         {
             printf("%02X ", chunk[i]);
         }
         printf("\n");
 
+        // Delay
         if (addr % 1024 == 0) {
             vTaskDelay(pdMS_TO_TICKS(5));
         }

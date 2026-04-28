@@ -4,9 +4,7 @@
 #include "driver/gpio.h"
 #include <stdint.h>
 #include "cmd.h"
-
-// Bin chunk size
-#define CHUNK_SIZE 16
+#include "string.h"
 
 // Task configs
 #define TASK_BUFF_SIZE 4096 // Task buffer size
@@ -16,20 +14,38 @@ void vTaskCode(void *pvParameters)
 {
     spi_pins_t pins_p;
 
-    // Disables Chip Select
-    gpio_set_level((gpio_num_t)pins_p.cs, 1);
-    
     // Initial delay to start serial monitor
     vTaskDelay(pdMS_TO_TICKS(2000));
 
-    // Flash size: 8 Mbit
-    uint32_t flash_size = 1024 * 1024;
-    uint8_t chunk[CHUNK_SIZE];
-
+    // Disables Chip Select
+    // gpio_set_level((gpio_num_t)pins_p.cs, 1);
     
+    for(;;)
+    {
+        char cmd_buff[64];
+        char cmd[16];
+        uint8_t addr_cmd;
+        uint32_t f_size;
 
-    // Shows manufacturer information
-    manufacturer_info(0x9F);
+        if((fgets(cmd_buff, sizeof(cmd_buff), stdin)) != NULL)
+        {
+            // Removes "\n" from cmd_buff
+            cmd_buff[strcspn(cmd_buff, "\n")] = "\0";
+            
+            int cmds_found = sscanf(cmd_buff, "%16s %i %i", cmd, &addr_cmd, &f_size);
+
+            if(cmds_found < 3)
+            {
+                printf("ERROR: Memory size not specified!\n");
+            }
+
+            if(strcmp(cmd, "dumpf"))
+            {
+                // Dump all flash data
+                spi_dumpf_cmd(f_size, addr_cmd);   
+            }
+        }
+    }
 }
 
 void app_main(void)
@@ -55,5 +71,12 @@ void app_main(void)
     gpio_config(&di_io_conf);
     gpio_config(&do_io_conf);
 
-    xTaskCreate(vTaskCode, "DUMP_TASK", TASK_BUFF_SIZE, NULL, TASK_PRIORITY, NULL);
+    xTaskCreate(
+        vTaskCode, 
+        "DUMP_TASK", 
+        TASK_BUFF_SIZE, 
+        NULL, 
+        TASK_PRIORITY, 
+        NULL
+    );
 }
