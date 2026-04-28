@@ -6,5 +6,8 @@
     "--query-driver=**",
     "--compile-commands-dir=/home/santtos/Projects/RTOS/spi-flash-dumper/build"
   ],
-  "idf.currentSetup": "/home/santtos/esp/esp-idf"
+  "idf.currentSetup": "/home/santtos/esp/esp-idf",
+  "cSpell.words": [
+    "mosi"
+  ]
 }

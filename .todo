@@ -1,0 +1,41 @@
+{
+  "todotree": {
+    "tree": [
+      {
+        "key": 1777345441938,
+        "children": [],
+        "todo": {
+          "content": "Substituir no main.c as utilizações do SPI_transfer",
+          "id": 1777345441938,
+          "level": "warning",
+          "done": false,
+          "start": 1777345441938
+        }
+      },
+      {
+        "key": 1777345471210,
+        "children": [],
+        "todo": {
+          "content": "Garantir que cada função no CMD, faca apenas uma coisa",
+          "id": 1777345471210,
+          "level": "success",
+          "done": false,
+          "start": 1777345471210
+        }
+      }
+    ],
+    "expandKeys": [],
+    "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
+    "add_mode": "bottom",
+    "virtual": false,
+    "timelines": [],
+    "showLine": false,
+    "playFontSize": 24,
+    "title": ".todo",
+    "autoSort": false,
+    "showEndTime": false,
+    "simpleMode": false,
+    "lang": "en",
+    "version": "1777345549251"
+  }
+}
