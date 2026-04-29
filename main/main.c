@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "cmd.h"
 #include "string.h"
+#include "esp_rom_sys.h"
+#include "peri.h"
 
 // Task configs
 #define TASK_BUFF_SIZE 4096 // Task buffer size
@@ -12,27 +14,25 @@
 
 void vTaskCode(void *pvParameters)
 {
-    spi_pins_t pins_p;
-
     // Initial delay to start serial monitor
     vTaskDelay(pdMS_TO_TICKS(2000));
 
     // Disables Chip Select
-    // gpio_set_level((gpio_num_t)pins_p.cs, 1);
+    // gpio_set_level((gpio_num_t)pins.cs, 1);
     
     for(;;)
     {
         char cmd_buff[64];
         char cmd[16];
         uint8_t addr_cmd;
-        uint32_t f_size;
+        uint32_t data;
 
         if((fgets(cmd_buff, sizeof(cmd_buff), stdin)) != NULL)
         {
             // Removes "\n" from cmd_buff
-            cmd_buff[strcspn(cmd_buff, "\n")] = "\0";
+            cmd_buff[strcspn(cmd_buff, "\n")] = '\0';
             
-            int cmds_found = sscanf(cmd_buff, "%16s %i %i", cmd, &addr_cmd, &f_size);
+            int cmds_found = sscanf(cmd_buff, "%16s %hhi %li", cmd, &addr_cmd, &data);
 
             if(cmds_found < 3)
             {
@@ -42,7 +42,14 @@ void vTaskCode(void *pvParameters)
             if(strcmp(cmd, "dumpf"))
             {
                 // Dump all flash data
-                spi_dumpf_cmd(f_size, addr_cmd);   
+                // Example: "spi dumpf READ_FLASH_ADDRESS"
+                spi_dumpf_cmd(data, addr_cmd);
+            }
+
+            if(strcmp(cmd, "read"))
+            {
+                // Example: "spi read READ_FLASH_ADDRESS"
+                spi_read_addr(data, 3, addr_cmd);
             }
         }
     }
@@ -50,10 +57,8 @@ void vTaskCode(void *pvParameters)
 
 void app_main(void)
 {
-    spi_pins_t pins_p;
-    
     gpio_config_t di_io_conf = {
-    .pin_bit_mask = (1ULL << pins_p.mosi) | (1ULL << pins_p.clk) | (1ULL << pins_p.cs),
+    .pin_bit_mask = (1ULL << pins.mosi) | (1ULL << pins.clk) | (1ULL << pins.cs),
     .mode = GPIO_MODE_OUTPUT,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
     .pull_up_en = GPIO_PULLDOWN_ENABLE,
@@ -61,7 +66,7 @@ void app_main(void)
     };
 
     gpio_config_t do_io_conf = {
-        .pin_bit_mask = (1ULL << pins_p.miso),
+        .pin_bit_mask = (1ULL << pins.miso),
         .mode = GPIO_MODE_INPUT,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .pull_up_en = GPIO_PULLUP_ENABLE,
