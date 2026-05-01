@@ -27,8 +27,9 @@ void vTaskCode(void *pvParameters)
     for(;;)
     {        
         char cmd[16];
-        uint8_t addr_cmd = 0;
-        uint32_t data = 0;
+
+        unsigned int addr_cmd = 0;
+        unsigned int data = 0;
         
         int c = getchar();
 
@@ -37,7 +38,7 @@ void vTaskCode(void *pvParameters)
             vTaskDelay(pdMS_TO_TICKS(10));
             continue;
         }
-        
+
         if((c == '\n' || c == '\r'))
         {
              // Removes "\n" from cmd_buff
@@ -45,7 +46,7 @@ void vTaskCode(void *pvParameters)
             
             int cmds_found = sscanf(
                 cmd_buff, 
-                "%15s %hhu %lu", 
+                "%15s %x %x", 
                 cmd, 
                 &addr_cmd, 
                 &data
@@ -59,19 +60,22 @@ void vTaskCode(void *pvParameters)
             {
                 if(strcmp(cmd, "dumpf") == 0)
                 {
+                    printf("\nVariables: %x - %x\n", addr_cmd, data);
                     // Dump all flash data
-                    // Example: "dumpf READ_FLASH_ADDRESS"
+                    // Example: "dumpf READ_FLASH_ADDRESS IC_CAPACITY"
                     spi_dumpf_cmd(data, addr_cmd);
                 }
 
                 if(strcmp(cmd, "read") == 0)
                 {
+                    printf("\nVariables: %x - %x\n", addr_cmd, data);
                     // Example: "read READ_FLASH_ADDRESS addr"
-                    spi_read_addr(data, 3, addr_cmd);
+                    spi_read_addr(data, DEFAULT_24BIT_SET, addr_cmd);
                 }
 
                 if(strcmp(cmd, "getman") == 0)
                 {
+                    printf("\nVariables: %x - %x\n", addr_cmd, data);
                     // Example: "getman JEDEC_ADDR"
                     spi_get_manuf(addr_cmd);
                 }
@@ -103,11 +107,6 @@ void vTaskCode(void *pvParameters)
             // Echo character
             putchar(c);
             fflush(stdout);
-        }
-
-        if (idx >= CMD_BUF_SIZE - 1)
-        {
-            printf("\nBuffer full!\n");
         }
 
         vTaskDelay(pdMS_TO_TICKS(10));

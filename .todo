@@ -2,25 +2,25 @@
   "todotree": {
     "tree": [
       {
-        "key": 1777345441938,
+        "key": 1777645400958,
         "children": [],
         "todo": {
-          "content": "Substituir no main.c as utilizações do SPI_transfer",
-          "id": 1777345441938,
-          "level": "warning",
+          "content": "Corrigir as funcionalidades do cmd.c",
+          "id": 1777645400958,
+          "level": "danger",
           "done": false,
-          "start": 1777345441938
+          "start": 1777645400958
         }
       },
       {
-        "key": 1777345471210,
+        "key": 1777642348171,
         "children": [],
         "todo": {
-          "content": "Garantir que cada função no CMD, faca apenas uma coisa",
-          "id": 1777345471210,
+          "content": "implementar um switch case no main, quando aperta enter",
+          "id": 1777642348171,
           "level": "success",
           "done": false,
-          "start": 1777345471210
+          "start": 1777642348171
         }
       }
     ],
@@ -36,6 +36,6 @@
     "showEndTime": false,
     "simpleMode": false,
     "lang": "en",
-    "version": "1777345549251"
+    "version": "1777645442154"
   }
 }

@@ -10,5 +10,7 @@
   "cSpell.words": [
     "dumpf",
     "mosi"
-  ]
+  ],
+  "idf.port": "/dev/ttyUSB0",
+  "idf.flashType": "UART"
 }

@@ -11,37 +11,37 @@ uint8_t spi_send_data(uint8_t data)
     for(int i = 7; i >= 0; i--)
     {
         // Data is shifted, and send to flash
-        gpio_set_level((gpio_num_t) pins.mosi, (data >> i) & 0x01);
+        gpio_set_level((gpio_num_t) spi_p.mosi, (data >> i) & 0x01);
         esp_rom_delay_us(5);
 
         // Clocks sets up
-        gpio_set_level((gpio_num_t)pins.clk, 1);
+        gpio_set_level((gpio_num_t)spi_p.clk, 1);
         esp_rom_delay_us(5);
 
-        if(gpio_get_level((gpio_num_t)pins.miso))
+        if(gpio_get_level((gpio_num_t)spi_p.miso))
         {
             received_data |= (1 << i);
         }
 
-        gpio_set_level((gpio_num_t)pins.clk, 0);
+        gpio_set_level((gpio_num_t)spi_p.clk, 0);
         esp_rom_delay_us(5);
     }
 
     return received_data;
 }
 
-void manufacturer_info(uint8_t addr)
+void spi_get_manuf(uint8_t jedec_addr)
 {
-    gpio_set_level((gpio_num_t)pins.cs, 0);
+    gpio_set_level((gpio_num_t)spi_p.cs, 0);
     
     // ID command
-    spi_send_data(addr);
+    spi_send_data(jedec_addr);
 
     uint8_t m_id = spi_send_data(0x00);
     uint8_t type = spi_send_data(0x00);
     uint8_t cap = spi_send_data(0x00);
     
-    gpio_set_level((gpio_num_t)pins.cs, 1);
+    gpio_set_level((gpio_num_t)spi_p.cs, 1);
 
     printf("Manufacturer ID: %02X, Type: %02X, Capacity: %02X\n", m_id, type, cap);
 }
@@ -49,9 +49,9 @@ void manufacturer_info(uint8_t addr)
 void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
 {
     uint8_t ret_data;
-
+    
     // Enables CS
-    gpio_set_level((gpio_num_t)pins.cs, 0);
+    gpio_set_level((gpio_num_t)spi_p.cs, 0);
     esp_rom_delay_us(1);
 
     // Read command
@@ -79,7 +79,7 @@ void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
     esp_rom_delay_us(1);
 
     // Disables CS
-    gpio_set_level((gpio_num_t)pins.cs, 1);
+    gpio_set_level((gpio_num_t)spi_p.cs, 1);
 }
 
 void spi_dumpf_cmd(uint32_t ic_capacity, uint8_t r_cmd)
