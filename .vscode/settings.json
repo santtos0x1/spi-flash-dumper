@@ -9,6 +9,7 @@
   "idf.currentSetup": "/home/santtos/esp/esp-idf",
   "cSpell.words": [
     "dumpf",
+    "jedec",
     "mosi"
   ],
   "idf.port": "/dev/ttyUSB0",
