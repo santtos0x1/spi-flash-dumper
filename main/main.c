@@ -1,12 +1,13 @@
 #include <stdio.h>
+#include <stdint.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
-#include <stdint.h>
 #include "cmd.h"
 #include "string.h"
 #include "esp_rom_sys.h"
 #include "peri.h"
+#include "config.h"
 
 // CLI task stack size
 #define TASK_BUFF_SIZE 8192
@@ -147,9 +148,8 @@ void app_main(void)
 {
     // Configure SPI output pins
     gpio_config_t di_io_conf = {
-        .pin_bit_mask = (1ULL << spi_p.mosi) |
-                         (1ULL << spi_p.clk)  |
-                         (1ULL << spi_p.cs),
+        .pin_bit_mask = (1ULL << spi_p.mosi) | (1ULL << spi_p.clk) 
+        | (1ULL << spi_p.cs),
 
         .mode = GPIO_MODE_OUTPUT,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
@@ -160,7 +160,6 @@ void app_main(void)
     // Configure SPI input pin
     gpio_config_t do_io_conf = {
         .pin_bit_mask = (1ULL << spi_p.miso),
-
         .mode = GPIO_MODE_INPUT,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .pull_up_en = GPIO_PULLUP_ENABLE,

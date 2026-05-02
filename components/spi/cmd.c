@@ -3,6 +3,7 @@
 #include "driver/gpio.h"
 #include "esp_rom_sys.h"
 #include "peri.h"
+#include "config.h"
 
 // Send and receive one SPI byte using bit-banging
 uint8_t spi_send_data(uint8_t data)
@@ -135,7 +136,7 @@ void spi_dump_cmd(uint32_t ic_capacity, uint8_t r_cmd)
         esp_rom_delay_us(MS_TO_US(50));
 
         printf("\n");
-        
+
         // Small delay every 1KB
         // Helps avoid watchdog trigger
         if (addr % 1024 == 0)

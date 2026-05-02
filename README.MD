@@ -2,15 +2,13 @@
 
 ESP32-based SPI flash dumping and analysis tool using bit-banged SPI and a serial CLI for flash reading, JEDEC identification, and firmware extraction.
 
--
-
 ## Overview
 
 Instead of relying on the ESP32 hardware SPI peripheral, the project implements a software-driven SPI interface (**bit-banging**), giving full control over GPIO timing and communication behavior. This approach makes the tool flexible for interacting with a wide range of external SPI flash chips and low-level hardware targets.
 
 The tool provides a serial command-line interface through `idf.py monitor`, allowing direct interaction with flash devices using simple commands for reading memory, dumping firmware contents, and retrieving JEDEC manufacturer information.
 
-### Features
+### ✨ Features
 
 - Software-implemented SPI (bit-banging)
 - Interactive serial CLI
@@ -20,7 +18,7 @@ The tool provides a serial command-line interface through `idf.py monitor`, allo
 - Configurable GPIO pin mapping
 - Designed for firmware analysis and reverse engineering workflows
 
-### Example Commands
+### 📖 Example Commands
 
 ```bash
 read 0x03 0x000100
