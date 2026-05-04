@@ -5,7 +5,7 @@
 #include "config.h"
 #include "cmd.h"
 
-void cli_init(int idx, char *cmd_buff)
+void cli_init(int *idx, char *cmd_buff)
 {
     // Command name buffer
     char cmd[16];
@@ -21,13 +21,14 @@ void cli_init(int idx, char *cmd_buff)
     if(c == EOF)
     {
         esp_rom_delay_us(1);
+        return;
     }
     
     // Execute command when ENTER is pressed
     if((c == '\n' || c == '\r'))
     {
         // End string with NULL terminator
-        cmd_buff[idx] = '\0';
+        cmd_buff[*idx] = '\0';
         
         // Parse command and arguments
         int cmds_found = sscanf(
@@ -81,15 +82,15 @@ void cli_init(int idx, char *cmd_buff)
             fflush(stdout);
         
             // Clear command buffer
-            idx = 0;
+            *idx = 0;
             memset(cmd_buff, 0, sizeof(cmd_buff));
         }
     }
     
     // Handle backspace
-    if(((c == 127 || c == '\b') && idx > 0))
+    if(((c == 127 || c == '\b') && *idx > 0))
     {
-        idx--;
+        (*idx)--;
     
         // Remove character from terminal
         printf("\b \b");
@@ -97,9 +98,9 @@ void cli_init(int idx, char *cmd_buff)
     }
     
     // Store character if buffer is not full
-    if (idx < CMD_BUF_SIZE - 1)
+    if (*idx < CMD_BUF_SIZE - 1)
     {
-        cmd_buff[idx++] = (char)c;
+        cmd_buff[(*idx)++] = (char)c;
     
         // Echo typed character
         putchar(c);

@@ -37,7 +37,7 @@ void vTaskCode(void *pvParameters)
 
     for(;;)
     {
-        cli_init(idx, cmd_buff);
+        cli_init(&idx, cmd_buff);
 
         // Small delay to prevent watchdog trigger
         vTaskDelay(pdMS_TO_TICKS(10));
