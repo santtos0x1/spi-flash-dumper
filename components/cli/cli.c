@@ -49,9 +49,7 @@ void cli_init(int *idx, char *cmd_buff)
         
             // Dump full flash
             if(strcmp(cmd, "dump") == 0)
-            {
-                printf("\nVariables: %x - %x\n", addr_cmd, data);
-        
+            {        
                 // Example:
                 // dump 0x03 0x200000
                 spi_dump_cmd(data, addr_cmd);
@@ -59,9 +57,7 @@ void cli_init(int *idx, char *cmd_buff)
         
             // Read specific flash address
             if(strcmp(cmd, "read") == 0)
-            {
-                printf("\nVariables: %x - %x\n", addr_cmd, data);
-        
+            {        
                 // Example:
                 // read 0x03 0x000100
                 spi_read_addr(data, DEFAULT_24BIT_SET, addr_cmd);
@@ -70,8 +66,6 @@ void cli_init(int *idx, char *cmd_buff)
             // Read JEDEC manufacturer ID
             if(strcmp(cmd, "getman") == 0)
             {
-                printf("\nVariables: %x - %x\n", addr_cmd, data);
-        
                 // Example:
                 // getman 0x9F
                 spi_get_manuf(addr_cmd);
@@ -79,7 +73,6 @@ void cli_init(int *idx, char *cmd_buff)
         
             // Print prompt again
             printf("> ");
-            fflush(stdout);
         
             // Clear command buffer
             *idx = 0;
@@ -94,7 +87,8 @@ void cli_init(int *idx, char *cmd_buff)
     
         // Remove character from terminal
         printf("\b \b");
-        fflush(stdout);
+
+        return;
     }
     
     // Store character if buffer is not full

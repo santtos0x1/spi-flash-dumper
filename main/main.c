@@ -23,7 +23,7 @@
 void vTaskCode(void *pvParameters)
 {
     // Small delay before starting task
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(500));
 
     // Buffer used to store terminal input
     char cmd_buff[CMD_BUF_SIZE];

@@ -5,6 +5,8 @@
 #include "peri.h"
 #include "config.h"
 
+#define DEFAULT_CHUNK_SIZE 16
+
 // Send and receive one SPI byte using bit-banging
 uint8_t spi_send_data(uint8_t data)
 {
@@ -80,7 +82,7 @@ void spi_get_manuf(uint8_t jedec_addr)
 // Read flash memory address
 void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
 {
-    uint8_t ret_data;
+    uint8_t ret_data[16];
 
     // Enable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
@@ -106,14 +108,19 @@ void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
     for(int i = 0; i < len; i++)
     {
         // Send dummy byte and receive data
-        ret_data = spi_send_data(0x00);
+        ret_data[i] = spi_send_data(0x00);
         esp_rom_delay_us(1);
+    }
 
-        // Print received byte
-        printf("0x%02X\n", ret_data);
+    for(int i = 0; i < len; i++)
+    {
+        // Print received bytes
+        printf("%2X ", ret_data[i]);
     }
 
     esp_rom_delay_us(1);
+
+    printf("\n");
 
     // Disable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 1);
@@ -122,26 +129,21 @@ void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
 // Dump full flash content
 void spi_dump_cmd(uint32_t ic_capacity, uint8_t r_cmd)
 {
-    // Bytes read per iteration
-    uint8_t chunk_size = 16;
-
     // Loop through entire flash
-    for(uint32_t addr = 0; addr < ic_capacity; addr += chunk_size)
+    for(uint32_t addr = 0; addr < ic_capacity; addr += DEFAULT_CHUNK_SIZE)
     {
         // Print current address
-        printf("%06X: ", (unsigned int)addr);
+        printf("%6X: ", (unsigned int)addr);
 
         // Read chunk data
-        spi_read_addr(addr, chunk_size, r_cmd);
+        spi_read_addr(addr, DEFAULT_CHUNK_SIZE, r_cmd);
         esp_rom_delay_us(MS_TO_US(50));
-
-        printf("\n");
 
         // Small delay every 1KB
         // Helps avoid watchdog trigger
-        if (addr % 1024 == 0)
+        if (addr % 256 == 0)
         {
-            esp_rom_delay_us(MS_TO_US(100));
+            esp_rom_delay_us(MS_TO_US(200));
         }
     }
 }
