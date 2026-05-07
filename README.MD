@@ -1,5 +1,10 @@
 # ESP Flash dumper
 
+![C](https://img.shields.io/badge/language-C-blue.svg)
+![ESP32](https://img.shields.io/badge/plataform-ESP32-red.svg)
+![ESP-IDF](https://img.shields.io/badge/framework-ESP--IDF-black.svg)
+![License](https://img.shields.io/badge/license-MIT-purple.svg)
+
 ESP32-based SPI flash dumping and analysis tool using bit-banged SPI and a serial CLI for flash reading, JEDEC identification, and firmware extraction.
 
 ## 📚 Overview
@@ -63,5 +68,11 @@ dumpf 0x03 0x200000
 ```
 
 - Dumps the full flash memory contents.
+
+To stop the dump process, press the **BOOT** button on the microcontroller board.
+
+### Stopping the Dump Process
+
+To stop the dump process, press the **BOOT** button on the microcontroller board. The firmware continuously checks the BOOT button state during execution. When the button is pressed, the dump operation is safely interrupted and returns to command line.
 
 ---

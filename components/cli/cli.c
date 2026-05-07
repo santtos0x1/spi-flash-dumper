@@ -51,7 +51,9 @@ void cli_init(int *idx, char *cmd_buff)
             {        
                 printf("\n");
                 printf("Press the BOOT button on ESP32 to interrupt dump!\n");
+                
                 esp_rom_delay_us(MS_TO_US(1000));
+
                 // Example:
                 // dump 0x03 0x200000
                 spi_dump_cmd(data, addr_cmd);

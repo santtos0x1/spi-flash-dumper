@@ -11,6 +11,7 @@
     "dumpf",
     "jedec",
     "mannualy",
+    "microcontroller",
     "mosi"
   ],
   "idf.port": "/dev/ttyUSB0",
