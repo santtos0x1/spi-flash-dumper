@@ -69,8 +69,6 @@ dump 0x03 0x200000
 
 - Dumps the full flash memory contents.
 
-To stop the dump process, press the **BOOT** button on the microcontroller board.
-
 ### Stopping the Dump Process
 
 To stop the dump process, press the **BOOT** button on the microcontroller board. The firmware continuously checks the BOOT button state during execution. When the button is pressed, the dump operation is safely interrupted and returns to command line.
