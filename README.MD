@@ -64,7 +64,7 @@ getman 0x9F
 - Retrieves JEDEC manufacturer information.
 
 ```bash
-dumpf 0x03 0x200000
+dump 0x03 0x200000
 ```
 
 - Dumps the full flash memory contents.
