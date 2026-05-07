@@ -9,6 +9,7 @@
 #include "peri.h"
 #include "config.h"
 #include "cli.h"
+#include "esp_task_wdt.h"
 
 // CLI task stack size
 #define TASK_BUFF_SIZE 8192
@@ -22,8 +23,18 @@
 // CLI task
 void vTaskCode(void *pvParameters)
 {
+    esp_err_t err;
+
     // Small delay before starting task
     vTaskDelay(pdMS_TO_TICKS(500));
+
+    printf("Warning: It is recommended to disable the Task Watchdog Timer (TWDT) to prevent it from triggering during bit-banging operations.\n");
+
+    err = esp_task_wdt_delete(NULL);
+    if(err != ESP_OK)
+    {
+        printf("Watchdog is disabled for this task. Initializing CLI...\n");
+    }
 
     // Buffer used to store terminal input
     char cmd_buff[CMD_BUF_SIZE];
