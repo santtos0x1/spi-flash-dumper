@@ -6,6 +6,7 @@
 #include "config.h"
 
 #define DEFAULT_CHUNK_SIZE 16
+#define BOOT_GPIO0 0
 
 // Send and receive one SPI byte using bit-banging
 uint8_t spi_send_data(uint8_t data)
@@ -132,6 +133,11 @@ void spi_dump_cmd(uint32_t ic_capacity, uint8_t r_cmd)
     // Loop through entire flash
     for(uint32_t addr = 0; addr < ic_capacity; addr += DEFAULT_CHUNK_SIZE)
     {
+        if (gpio_get_level(BOOT_GPIO0) == 0) {
+            printf("Flash dump stopped mannualy!\n");
+            break;
+        }
+
         // Print current address
         printf("%6X: ", (unsigned int)addr);
 

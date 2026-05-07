@@ -27,9 +27,7 @@ void vTaskCode(void *pvParameters)
 
     // Small delay before starting task
     vTaskDelay(pdMS_TO_TICKS(500));
-
-    printf("Warning: It is recommended to disable the Task Watchdog Timer (TWDT) to prevent it from triggering during bit-banging operations.\n");
-
+    
     err = esp_task_wdt_delete(NULL);
     if(err != ESP_OK)
     {
@@ -41,10 +39,6 @@ void vTaskCode(void *pvParameters)
 
     // Current buffer index
     int idx = 0;
-
-    // Print terminal prompt
-    printf("> ");
-    fflush(stdout);
 
     for(;;)
     {
@@ -77,9 +71,18 @@ void app_main(void)
         .intr_type = GPIO_INTR_DISABLE
     };
 
+    gpio_config_t boot_conf = {
+        .pin_bit_mask = (1ULL << 0),
+        .mode = GPIO_MODE_INPUT,
+        .pull_down_en = GPIO_PULLDOWN_ENABLE,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .intr_type = GPIO_INTR_POSEDGE
+    };
+
     // Apply GPIO configs
     gpio_config(&di_io_conf);
     gpio_config(&do_io_conf);
+    gpio_config(&boot_conf);
 
     // Create CLI task on CPU core 1
     xTaskCreatePinnedToCore(

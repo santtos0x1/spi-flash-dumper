@@ -2,7 +2,7 @@
 
 ESP32-based SPI flash dumping and analysis tool using bit-banged SPI and a serial CLI for flash reading, JEDEC identification, and firmware extraction.
 
-## Overview
+## 📚 Overview
 
 Instead of relying on the ESP32 hardware SPI peripheral, the project implements a software-driven SPI interface (**bit-banging**), giving full control over GPIO timing and communication behavior. This approach makes the tool flexible for interacting with a wide range of external SPI flash chips and low-level hardware targets.
 
@@ -18,27 +18,16 @@ The tool provides a serial command-line interface through `idf.py monitor`, allo
 - Configurable GPIO pin mapping
 - Designed for firmware analysis and reverse engineering workflows
 
-### 📖 Example Commands
+### 📖 Example
 
 ```bash
-read 0x03 0x000100
+read READ_CMD ADDR
 ```
 
-Reads data from a specific flash memory address.
+- Reads data from a specific flash memory address.
 
-```bash
-getman 0x9F
-```
 
-Retrieves JEDEC manufacturer information.
-
-```bash
-dumpf 0x03 0x200000
-```
-
-Dumps the full flash memory contents.
-
-### Purpose
+### 📍Purpose
 
 This project was created as a low-level learning and research tool focused on:
 
@@ -47,5 +36,32 @@ This project was created as a low-level learning and research tool focused on:
 - Embedded systems development
 - Hardware reverse engineering
 - Manual protocol implementation
+
+
+## 💻 Usage
+
+### ⚠️ Warning
+
+- It is recommended to ***disable the Task Watchdog Timer (TWDT)*** to prevent it from triggering during bit-banging operations.
+
+---
+
+```bash
+read 0x03 0x000100
+```
+
+- Reads data from a specific flash memory address.
+
+```bash
+getman 0x9F
+```
+
+- Retrieves JEDEC manufacturer information.
+
+```bash
+dumpf 0x03 0x200000
+```
+
+- Dumps the full flash memory contents.
 
 ---

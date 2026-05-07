@@ -46,42 +46,44 @@ void cli_init(int *idx, char *cmd_buff)
         }
         else
         {
-        
             // Dump full flash
             if(strcmp(cmd, "dump") == 0)
             {        
                 printf("\n");
-
+                printf("Press the BOOT button on ESP32 to interrupt dump!\n");
+                esp_rom_delay_us(MS_TO_US(1000));
                 // Example:
                 // dump 0x03 0x200000
                 spi_dump_cmd(data, addr_cmd);
             }
-        
-            // Read specific flash address
-            if(strcmp(cmd, "read") == 0)
-            {   
+            else if(strcmp(cmd, "read") == 0)
+            {
+                // Read specific flash address 
+
                 printf("\n");
                 
                 // Example:
                 // read 0x03 0x000100
                 spi_read_addr(data, DEFAULT_24BIT_SET, addr_cmd);
             }
-        
-            // Read JEDEC manufacturer ID
-            if(strcmp(cmd, "getman") == 0)
+            else if(strcmp(cmd, "getman") == 0)
             {
+                // Read JEDEC manufacturer ID
+                
                 printf("\n");
 
                 // Example:
                 // getman 0x9F
                 spi_get_manuf(addr_cmd);
             }
-        
-            // Print prompt again
-            printf("> ");
-        
+            else // Default
+            {
+                printf("Invalid command!\n");
+            }
+
             // Clear command buffer
             *idx = 0;
+            
             memset(cmd_buff, 0, sizeof(cmd_buff));
         }
     }
