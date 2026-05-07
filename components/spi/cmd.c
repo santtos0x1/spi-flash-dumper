@@ -113,6 +113,8 @@ void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
         esp_rom_delay_us(1);
     }
 
+    printf("0x%06X: ", (unsigned int)addr);
+
     for(int i = 0; i < len; i++)
     {
         // Print received bytes
@@ -139,7 +141,7 @@ void spi_dump_cmd(uint32_t ic_capacity, uint8_t r_cmd)
         }
 
         // Print current address
-        printf("%6X: ", (unsigned int)addr);
+        printf("0x%06X: ", (unsigned int)addr);
 
         // Read chunk data
         spi_read_addr(addr, DEFAULT_CHUNK_SIZE, r_cmd);
@@ -147,7 +149,7 @@ void spi_dump_cmd(uint32_t ic_capacity, uint8_t r_cmd)
 
         // Small delay every 1KB
         // Helps avoid watchdog trigger
-        if (addr % 256 == 0)
+        if (addr % 1024 == 0)
         {
             esp_rom_delay_us(MS_TO_US(200));
         }

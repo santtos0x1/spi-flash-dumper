@@ -50,8 +50,9 @@ void cli_init(int *idx, char *cmd_buff)
             if(strcmp(cmd, "dump") == 0)
             {        
                 printf("\n");
-                printf("Press the BOOT button on ESP32 to interrupt dump!\n");
                 
+                printf("Press the BOOT button on ESP32 to interrupt dump!\n");
+
                 esp_rom_delay_us(MS_TO_US(1000));
 
                 // Example:

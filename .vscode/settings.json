@@ -9,10 +9,12 @@
   "idf.currentSetup": "/home/santtos/esp/esp-idf",
   "cSpell.words": [
     "dumpf",
+    "getman",
     "jedec",
     "mannualy",
     "microcontroller",
-    "mosi"
+    "mosi",
+    "TWDT"
   ],
   "idf.port": "/dev/ttyUSB0",
   "idf.flashType": "UART"

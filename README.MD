@@ -31,7 +31,6 @@ read READ_CMD ADDR
 
 - Reads data from a specific flash memory address.
 
-
 ### 📍Purpose
 
 This project was created as a low-level learning and research tool focused on:
@@ -41,7 +40,6 @@ This project was created as a low-level learning and research tool focused on:
 - Embedded systems development
 - Hardware reverse engineering
 - Manual protocol implementation
-
 
 ## 💻 Usage
 
