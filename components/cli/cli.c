@@ -13,6 +13,7 @@ void cli_init(int *idx, char *cmd_buff)
     // Command arguments
     unsigned int f_arg = 0;
     unsigned int s_arg = 0;
+    uint8_t t_arg = 0;
     
     // Read one character from terminal
     int c = getchar();
@@ -33,10 +34,11 @@ void cli_init(int *idx, char *cmd_buff)
         // Parse command and arguments
         int cmds_found = sscanf(
             cmd_buff,
-            "%15s %x %i",
+            "%15s %x %i %hhu",
             cmd,
             &f_arg,
-            &s_arg
+            &s_arg,
+            &t_arg
         );
         
         // Dump full flash
@@ -47,22 +49,36 @@ void cli_init(int *idx, char *cmd_buff)
             printf("Press the BOOT button on ESP32 to interrupt dump!\n");
             esp_rom_delay_us(MS_TO_US(1000));
             
+            if ((t_arg != 0) && (t_arg != 1))
+            {
+                // Sets default value to t_arg (fast_read off);
+                printf("Fast read command invalid! Using fast read off\n");
+                t_arg = 0;
+            }
+
             if(s_arg > 1024)
             {
-                printf("Too high value for reading! Setting default value: 256 bytes.\n");
+                printf("Too high value for reading! Using default value: 256 bytes.\n");
                 esp_rom_delay_us(MS_TO_US(1000));
                 s_arg = 256;
             }
             
-            // Example: dump 0x200000 256
-            spi_dump_cmd(f_arg, s_arg);
+            // Example: dump 0x200000 256 1/0
+            spi_dump_cmd(f_arg, s_arg, t_arg);
         }
         else if((strcmp(cmd, "read") == 0) && (cmds_found >= 2)) // Read specific flash address 
         {
             printf("\n");
             
-            // Example: read 0x000100 256
-            spi_read_addr(f_arg, s_arg);
+            if ((t_arg != 0) && (t_arg != 1))
+            {
+                // Sets default value to t_arg (fast_read off);
+                printf("Fast read command invalid! Using fast read off\n");
+                t_arg = 0;
+            }
+            
+            // Example: read 0x000100 256 1/0
+            spi_read_addr(f_arg, s_arg, t_arg);
         }
         else if((strcmp(cmd, "jedec") == 0) && cmds_found == 1) // Read JEDEC manufacturer ID
         {        
