@@ -26,7 +26,7 @@ The tool provides a serial command-line interface through `idf.py monitor`, allo
 ### 📖 Example
 
 ```bash
-read READ_CMD ADDR
+read ADDRESS CHUNK_SIZE
 ```
 
 - Reads data from a specific flash memory address.
@@ -35,34 +35,44 @@ read READ_CMD ADDR
 
 This project was created as a low-level learning and research tool focused on:
 
-- Understanding SPI communication internals
-- Firmware extraction techniques
+- Understanding SPI communication
+- Extraction with Bit-banging technique
 - Embedded systems development
-- Hardware reverse engineering
 - Manual protocol implementation
 
 ## 💻 Usage
+
+ 1. Clone this repository with `git clone https://github.com/santtos0x1/spi-flash-dumper.git`
+ 2. Enter folder and flash your ESP32 using `idf.py flash -p /dev/X`
+ 3. Open the ESP-IDF monitor: `idf.py monitor -p /dev/X`
+
+---
 
 ### ⚠️ Warning
 
 - It is recommended to ***disable the Task Watchdog Timer (TWDT)*** to prevent it from triggering during bit-banging operations.
 
----
+Step-by-Step TWDT deactivation:
+
+1. Open ESP-IDF menuconfig: `idf.py menuconfig`
+2. Disables TWDT in `Component config -> ESP System Settings -> Initialize Task Watchdog Timer on startup`
+
+### 📋 Commands
 
 ```bash
-read 0x03 0x000100
+read 0x000100 256
 ```
 
 - Reads data from a specific flash memory address.
 
 ```bash
-getman 0x9F
+jedec
 ```
 
 - Retrieves JEDEC manufacturer information.
 
 ```bash
-dump 0x03 0x200000
+dump 0x100000 16
 ```
 
 - Dumps the full flash memory contents.
