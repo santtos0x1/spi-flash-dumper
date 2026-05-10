@@ -20,7 +20,7 @@ The tool provides a serial command-line interface through `idf.py monitor`, allo
 - SPI flash memory reading
 - Full firmware dumping (Via CLI)
 - JEDEC manufacturer identification
-- Configurable GPIO pin mapping
+- Fast read function
 - Designed for firmware analysis and reverse engineering workflows
 
 ### 📖 Command structure
