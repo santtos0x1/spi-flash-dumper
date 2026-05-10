@@ -75,6 +75,12 @@ dump FLASH-SIZE CHUNK-SIZE FAST-READ(0 or 1)
 
 - Dumps the full flash memory contents.
 
+```bash
+send ADDRESS
+```
+
+- Send and receive one byte. To receive the byte, send `0x00`.
+
 ### ⛔ Stopping the Dump Process
 
 To stop the dump process, press the **BOOT** button on the microcontroller board. The firmware continuously checks the BOOT button state during execution. When the button is pressed, the dump operation is safely interrupted and returns to command line.
