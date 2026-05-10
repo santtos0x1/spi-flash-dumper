@@ -26,7 +26,7 @@ The tool provides a serial command-line interface through `idf.py monitor`, allo
 ### 📖 Command structure
 
 ```bash
-COMMAND ADDRESS CHUNK_SIZE FAST_READ
+COMMAND ADDRESS CHUNK-SIZE FAST-READ
 ```
 
 ### 📍Purpose
@@ -58,7 +58,7 @@ Step-by-Step TWDT deactivation:
 ### 📋 Commands
 
 ```bash
-read 0x000100 256
+read ADDRESS CHUNK-SIZE FAST-READ(0 or 1)
 ```
 
 - Reads data from a specific flash memory address.
@@ -70,7 +70,7 @@ jedec
 - Retrieves JEDEC manufacturer information.
 
 ```bash
-dump 0x100000 16 1
+dump FLASH-SIZE CHUNK-SIZE FAST-READ(0 or 1)
 ```
 
 - Dumps the full flash memory contents.
