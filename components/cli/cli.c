@@ -11,8 +11,8 @@ void cli_init(int *idx, char *cmd_buff)
     char cmd[16];
     
     // Command arguments
-    unsigned int addr_cmd = 0;
-    unsigned int data = 0;
+    unsigned int f_arg = 0;
+    unsigned int s_arg = 0;
     
     // Read one character from terminal
     int c = getchar();
@@ -33,62 +33,52 @@ void cli_init(int *idx, char *cmd_buff)
         // Parse command and arguments
         int cmds_found = sscanf(
             cmd_buff,
-            "%15s %x %x",
+            "%15s %x %i",
             cmd,
-            &addr_cmd,
-            &data
+            &f_arg,
+            &s_arg
         );
         
-        // Invalid command
-        if(cmds_found < 2)
-        {
-            printf("ERROR: invalid command length.\n");
-        }
-        else
-        {
-            // Dump full flash
-            if(strcmp(cmd, "dump") == 0)
-            {        
-                printf("\n");
-                
-                printf("Press the BOOT button on ESP32 to interrupt dump!\n");
-
-                esp_rom_delay_us(MS_TO_US(1000));
-
-                // Example:
-                // dump 0x03 0x200000
-                spi_dump_cmd(data, addr_cmd);
-            }
-            else if(strcmp(cmd, "read") == 0)
-            {
-                // Read specific flash address 
-
-                printf("\n");
-                
-                // Example:
-                // read 0x03 0x000100
-                spi_read_addr(data, DEFAULT_24BIT_SET, addr_cmd);
-            }
-            else if(strcmp(cmd, "getman") == 0)
-            {
-                // Read JEDEC manufacturer ID
-                
-                printf("\n");
-
-                // Example:
-                // getman 0x9F
-                spi_get_manuf(addr_cmd);
-            }
-            else // Default
-            {
-                printf("Invalid command!\n");
-            }
-
-            // Clear command buffer
-            *idx = 0;
+        // Dump full flash
+        if((strcmp(cmd, "dump") == 0) && (cmds_found >= 2))
+        {        
+            printf("\n");
             
-            memset(cmd_buff, 0, sizeof(cmd_buff));
+            printf("Press the BOOT button on ESP32 to interrupt dump!\n");
+            esp_rom_delay_us(MS_TO_US(1000));
+            
+            if(s_arg > 1024)
+            {
+                printf("Too high value for reading! Setting default value: 256 bytes.\n");
+                esp_rom_delay_us(MS_TO_US(1000));
+                s_arg = 256;
+            }
+            
+            // Example: dump 0x200000 256
+            spi_dump_cmd(f_arg, s_arg);
         }
+        else if((strcmp(cmd, "read") == 0) && (cmds_found >= 2)) // Read specific flash address 
+        {
+            printf("\n");
+            
+            // Example: read 0x000100 256
+            spi_read_addr(f_arg, s_arg);
+        }
+        else if((strcmp(cmd, "jedec") == 0) && cmds_found == 1) // Read JEDEC manufacturer ID
+        {        
+            printf("\n");
+
+            // Example: jedec
+            spi_get_manuf();
+        }
+        else // Default
+        {
+            printf("\nInvalid command!\n");
+        }
+        
+        // Clear command buffer
+        *idx = 0;
+        memset(cmd_buff, 0, sizeof(cmd_buff));
     }
     
     // Handle backspace
@@ -98,7 +88,6 @@ void cli_init(int *idx, char *cmd_buff)
     
         // Remove character from terminal
         printf("\b \b");
-
         return;
     }
     

@@ -71,6 +71,7 @@ void app_main(void)
         .intr_type = GPIO_INTR_DISABLE
     };
 
+    // Configure BOOT button
     gpio_config_t boot_conf = {
         .pin_bit_mask = (1ULL << 0),
         .mode = GPIO_MODE_INPUT,

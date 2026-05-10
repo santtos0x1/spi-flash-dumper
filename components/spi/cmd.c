@@ -6,6 +6,7 @@
 #include "config.h"
 
 #define DEFAULT_CHUNK_SIZE 16
+#define DEFAULT_PAGE_SIZE 256
 #define BOOT_GPIO0 0
 
 // Send and receive one SPI byte using bit-banging
@@ -27,7 +28,9 @@ uint8_t spi_send_data(uint8_t data)
 
         // Clock HIGH
         gpio_set_level((gpio_num_t)spi_p.clk, 1);
+
         esp_rom_delay_us(5);
+
 
         // Read MISO bit
         if(gpio_get_level((gpio_num_t)spi_p.miso))
@@ -46,7 +49,7 @@ uint8_t spi_send_data(uint8_t data)
 }
 
 // Read JEDEC manufacturer information
-void spi_get_manuf(uint8_t jedec_addr)
+void spi_get_manuf(void)
 {
     uint8_t m_id, type, cap;
     
@@ -55,7 +58,7 @@ void spi_get_manuf(uint8_t jedec_addr)
     esp_rom_delay_us(1);
 
     // Send JEDEC command
-    spi_send_data(jedec_addr);
+    spi_send_data(FLASH_JEDEC_BYTE);
     esp_rom_delay_us(1);
 
     // Read manufacturer bytes
@@ -81,16 +84,21 @@ void spi_get_manuf(uint8_t jedec_addr)
 }
 
 // Read flash memory address
-void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
+void spi_read_addr(uint32_t addr, uint16_t len)
 {
-    uint8_t ret_data[16];
+    if(len == 0)
+    {
+        len = 256;
+    }
+
+    uint16_t ret_data[len];
 
     // Enable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
     esp_rom_delay_us(1);
 
     // Send read command
-    spi_send_data(r_cmd);
+    spi_send_data(FLASH_READ_BYTE);
     esp_rom_delay_us(1);
 
     // Send first address byte
@@ -118,7 +126,7 @@ void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
     for(int i = 0; i < len; i++)
     {
         // Print received bytes
-        printf("%2X ", ret_data[i]);
+        printf("%02X ", ret_data[i]);
     }
 
     esp_rom_delay_us(1);
@@ -130,26 +138,24 @@ void spi_read_addr(uint32_t addr, uint8_t len, uint8_t r_cmd)
 }
 
 // Dump full flash content
-void spi_dump_cmd(uint32_t ic_capacity, uint8_t r_cmd)
+void spi_dump_cmd(uint32_t ic_capacity, uint16_t chunk_size)
 {
     // Loop through entire flash
-    for(uint32_t addr = 0; addr < ic_capacity; addr += DEFAULT_CHUNK_SIZE)
+    for(uint32_t addr = 0; addr < ic_capacity; addr += chunk_size)
     {
-        if (gpio_get_level(BOOT_GPIO0) == 0) {
+        if (gpio_get_level(BOOT_GPIO0) == 0)
+        {
             printf("Flash dump stopped mannualy!\n");
             break;
         }
 
-        // Print current address
-        printf("0x%06X: ", (unsigned int)addr);
-
         // Read chunk data
-        spi_read_addr(addr, DEFAULT_CHUNK_SIZE, r_cmd);
+        spi_read_addr(addr, chunk_size);
         esp_rom_delay_us(MS_TO_US(50));
 
-        // Small delay every 1KB
+        // Small delay every 4KB
         // Helps avoid watchdog trigger
-        if (addr % 1024 == 0)
+        if (addr % 4096 == 0)
         {
             esp_rom_delay_us(MS_TO_US(200));
         }

@@ -7,4 +7,7 @@
 // Converts Ms to Us
 #define MS_TO_US(x) (x * 1000)
 
+#define FLASH_JEDEC_BYTE 0x9F
+#define FLASH_READ_BYTE 0x03
+
 #endif
