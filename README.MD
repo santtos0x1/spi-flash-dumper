@@ -23,13 +23,11 @@ The tool provides a serial command-line interface through `idf.py monitor`, allo
 - Configurable GPIO pin mapping
 - Designed for firmware analysis and reverse engineering workflows
 
-### 📖 Example
+### 📖 Command structure
 
 ```bash
-read ADDRESS CHUNK_SIZE FAST_READ
+COMMAND ADDRESS CHUNK_SIZE FAST_READ
 ```
-
-- Reads data from a specific flash memory address.
 
 ### 📍Purpose
 
@@ -60,7 +58,7 @@ Step-by-Step TWDT deactivation:
 ### 📋 Commands
 
 ```bash
-read 0x000100 256 0
+read 0x000100 256
 ```
 
 - Reads data from a specific flash memory address.
