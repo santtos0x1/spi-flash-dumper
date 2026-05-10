@@ -87,6 +87,16 @@ void cli_init(int *idx, char *cmd_buff)
             // Example: jedec
             spi_get_manuf();
         }
+        else if((strcmp(cmd, "send") == 0) && cmds_found == 2)
+        {
+            printf("\n");
+
+            uint8_t r_data = spi_send_data((uint8_t)f_arg);
+            if(f_arg == 0x00)
+            {
+                printf("Out-byte: 0x%02x", r_data);
+            }
+        }
         else // Default
         {
             printf("\nInvalid command!\n");
