@@ -6,8 +6,6 @@
 #include "config.h"
 #include <stdbool.h>
 
-#define DEFAULT_CHUNK_SIZE 16
-#define DEFAULT_PAGE_SIZE 256
 #define BOOT_GPIO0 0
 
 // Send and receive one SPI byte using bit-banging
@@ -98,14 +96,18 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
     esp_rom_delay_us(1);
 
-    // Send read command
-    spi_send_data(FLASH_READ_BYTE);
-    esp_rom_delay_us(1);
 
-    if(fast_read)
+    if(fast_read == 1)
     {
-        // Dummy byte for fast read
-        spi_send_data(0x00);
+        // Send read command
+        spi_send_data(FLASH_FREAD_BYTE);
+        esp_rom_delay_us(1);
+    }
+    else
+    {
+        // Send read command
+        spi_send_data(FLASH_READ_BYTE);
+        esp_rom_delay_us(1);
     }
 
     // Send first address byte
@@ -119,6 +121,12 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
     // Send third address byte
     spi_send_data(addr & 0xFF);
     esp_rom_delay_us(1);
+
+    if(fast_read == 1)
+    {
+        // Dummy byte for fast read
+        spi_send_data(0x00);
+    }
 
     // Read flash data
     for(int i = 0; i < len; i++)

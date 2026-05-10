@@ -1,13 +1,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-// Defines length of the bitset (Default: 3 bytes or 24 bits)
-#define DEFAULT_24BIT_SET 16
-
 // Converts Ms to Us
 #define MS_TO_US(x) (x * 1000)
 
 #define FLASH_JEDEC_BYTE 0x9F
 #define FLASH_READ_BYTE 0x03
+#define FLASH_FREAD_BYTE 0x0B
 
 #endif
