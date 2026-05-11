@@ -5,14 +5,18 @@
 #include "config.h"
 #include "cmd.h"
 
+#define CMD_BUFFER_S 8
+
+#define BACKSPACE_KEY 127
+
 void cli_init(int *idx, char *cmd_buff)
 {
     // Command name buffer
-    char cmd[16];
+    char cmd[CMD_BUFFER_S];
     
     // Command arguments
-    unsigned int f_arg = 0;
-    unsigned int s_arg = 0;
+    uint32_t f_arg = 0;
+    uint16_t s_arg = 0;
     uint8_t t_arg = 0;
     
     // Read one character from terminal
@@ -34,7 +38,7 @@ void cli_init(int *idx, char *cmd_buff)
         // Parse command and arguments
         int cmds_found = sscanf(
             cmd_buff,
-            "%15s %x %i %hhu",
+            "%15s %lx %hu %hhu",
             cmd,
             &f_arg,
             &s_arg,
@@ -76,7 +80,7 @@ void cli_init(int *idx, char *cmd_buff)
                 printf("Fast read command invalid! Using fast read off\n");
                 t_arg = 0;
             }
-            
+
             // Example: read 0x000100 256 1/0
             spi_read_addr(f_arg, s_arg, t_arg);
         }
@@ -108,12 +112,12 @@ void cli_init(int *idx, char *cmd_buff)
     }
     
     // Handle backspace
-    if(((c == 127 || c == '\b') && *idx > 0))
+    if(((c == BACKSPACE_KEY || c == '\b') && *idx > 0))
     {
         (*idx)--;
     
         // Remove character from terminal
-        printf("\b \b");
+        printf("\b\b");
         return;
     }
     

@@ -12,10 +12,10 @@
 #include "esp_task_wdt.h"
 
 // CLI task stack size
-#define TASK_BUFF_SIZE 8192
+#define TASK_BUFF_SIZE 4096
 
 // CLI task priority
-#define TASK_PRIORITY 1
+#define TASK_PRIORITY 3
 
 // Command buffer max size
 #define CMD_BUF_SIZE 64

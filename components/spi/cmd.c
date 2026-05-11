@@ -8,6 +8,8 @@
 
 #define BOOT_GPIO0 0
 
+#define DEFAULT_CHUNK_SIZE 256
+
 // Send and receive one SPI byte using bit-banging
 uint8_t spi_send_data(uint8_t data)
 {
@@ -27,9 +29,7 @@ uint8_t spi_send_data(uint8_t data)
 
         // Clock HIGH
         gpio_set_level((gpio_num_t)spi_p.clk, 1);
-
         esp_rom_delay_us(5);
-
 
         // Read MISO bit
         if(gpio_get_level((gpio_num_t)spi_p.miso))
@@ -50,7 +50,7 @@ uint8_t spi_send_data(uint8_t data)
 // Read JEDEC manufacturer information
 void spi_get_manuf(void)
 {
-    uint8_t m_id, type, cap;
+    uint8_t man_id_b, type_b, cap_b;
     
     // Enable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
@@ -60,14 +60,14 @@ void spi_get_manuf(void)
     spi_send_data(FLASH_JEDEC_BYTE);
     esp_rom_delay_us(1);
 
-    // Read manufacturer bytes
-    m_id = spi_send_data(0x00);
+    // Read JEDEC bytes
+    man_id_b = spi_send_data(0x00);
     esp_rom_delay_us(1);
 
-    type = spi_send_data(0x00);
+    type_b = spi_send_data(0x00);
     esp_rom_delay_us(1);
     
-    cap = spi_send_data(0x00);
+    cap_b = spi_send_data(0x00);
     esp_rom_delay_us(1);
 
     // Disable chip select
@@ -76,9 +76,9 @@ void spi_get_manuf(void)
     // Print chip information
     printf(
         "Manufacturer ID: %02X, Type: %02X, Capacity: %02X\n",
-        m_id,
-        type,
-        cap
+        man_id_b,
+        type_b,
+        cap_b
     );
 }
 
@@ -87,7 +87,7 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
 {
     if(len == 0)
     {
-        len = 256;
+        len = DEFAULT_CHUNK_SIZE;
     }
 
     uint16_t ret_data[len];
@@ -97,15 +97,15 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
     esp_rom_delay_us(1);
 
 
-    if(fast_read == 1)
+    if(fast_read)
     {
-        // Send read command
+        // Send fast read byte command
         spi_send_data(FLASH_FREAD_BYTE);
         esp_rom_delay_us(1);
     }
     else
     {
-        // Send read command
+        // Send read byte command
         spi_send_data(FLASH_READ_BYTE);
         esp_rom_delay_us(1);
     }
@@ -122,10 +122,11 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
     spi_send_data(addr & 0xFF);
     esp_rom_delay_us(1);
 
-    if(fast_read == 1)
+    if(fast_read)
     {
         // Dummy byte for fast read
         spi_send_data(0x00);
+        esp_rom_delay_us(1);
     }
 
     // Read flash data
