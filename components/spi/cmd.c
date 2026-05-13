@@ -14,22 +14,20 @@
 
 void spi_cs_toggle(uint8_t cs_level)
 {
+    // Set Chip-Select level to 1 if cs_level == 1
     if(cs_level)
     {
         gpio_set_level((gpio_num_t)spi_p.cs, 1);
     }
-    else
+    else // Set Chip-Select level to 1 if cs_level == 0
     {
         gpio_set_level((gpio_num_t)spi_p.cs, 0);
     }
 }
 
 // Send and receive one SPI byte using bit-banging
-uint8_t spi_send_data(uint8_t addr)
+void spi_send_data(uint8_t addr)
 {
-    // Stores received byte
-    uint8_t ret_data = 0;
-
     // Sends 8 bits, MSB first
     for(int i = 7; i >= 0; i--)
     {
@@ -45,11 +43,28 @@ uint8_t spi_send_data(uint8_t addr)
         gpio_set_level((gpio_num_t)spi_p.clk, 1);
         esp_rom_delay_us(5);
 
+        // Clock LOW
+        gpio_set_level((gpio_num_t)spi_p.clk, 0);
+        esp_rom_delay_us(5);
+    }
+}
+
+uint8_t spi_recv_data(void)
+{
+    // Stores received byte
+    uint8_t recv_data = 0;
+
+    for(int i = 7; i >= 0; i--)
+    {
+        // Clock HIGH
+        gpio_set_level((gpio_num_t)spi_p.clk, 1);
+        esp_rom_delay_us(5);
+
         // Read MISO bit
         if(gpio_get_level((gpio_num_t)spi_p.miso))
         {
             // Stores received bit
-            ret_data |= (1 << i);
+            recv_data |= (1 << i);
         }
 
         // Clock LOW
@@ -57,8 +72,7 @@ uint8_t spi_send_data(uint8_t addr)
         esp_rom_delay_us(5);
     }
 
-    // Return received SPI byte
-    return ret_data;
+    return recv_data;
 }
 
 // Read JEDEC manufacturer information
@@ -75,13 +89,13 @@ void spi_get_manuf(void)
     esp_rom_delay_us(1);
 
     // Read JEDEC bytes
-    man_id_b = spi_send_data(0x00);
+    man_id_b = spi_recv_data();
     esp_rom_delay_us(1);
 
-    type_b = spi_send_data(0x00);
+    type_b = spi_recv_data();
     esp_rom_delay_us(1);
     
-    cap_b = spi_send_data(0x00);
+    cap_b = spi_recv_data();
     esp_rom_delay_us(1);
 
     // Disable chip select
@@ -147,7 +161,7 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
     for(int i = 0; i < len; i++)
     {
         // Send dummy byte and receive data
-        ret_data[i] = spi_send_data(0x00);
+        ret_data[i] = spi_recv_data();
         esp_rom_delay_us(1);
     }
 

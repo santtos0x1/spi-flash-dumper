@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-uint8_t spi_send_data(uint8_t data);
+void spi_send_data(uint8_t data);
 
-uint8_t spi_recv_data(uint8_t r_len);
+uint8_t spi_recv_data(void);
 
 void spi_cs_toggle(uint8_t cs_level);
 

@@ -97,17 +97,19 @@ void cli_init(int *idx, char *cmd_buff)
         {
             printf("\n");
 
-            uint8_t r_data = spi_send_data((uint8_t)f_arg);
-            if(f_arg == 0x00)
-            {
-                printf("Out-byte: 0x%02x", r_data);
-            }
+            spi_send_data((uint8_t)f_arg);
         }
         else if ((strcmp(cmd, "cs") == 0) && cmds_found == 2)
         {
             printf("\n");
 
             spi_cs_toggle((uint8_t)f_arg);
+        }
+        else if ((strcmp(cmd, "recv") == 0) && cmds_found == 1)
+        {
+            printf("\n");
+
+            printf("Out-byte: 0x%02x", spi_recv_data());
         }
         else // Default
         {
