@@ -79,7 +79,13 @@ dump FLASH-SIZE CHUNK-SIZE FAST-READ(0 or 1)
 send ADDRESS
 ```
 
-- Send and receive one byte. To receive the byte, send `0x00`.
+- Send one byte.
+
+```bash
+recv
+```
+
+- Receive one byte.
 
 ### ⛔ Stopping the Dump Process
 
