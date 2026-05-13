@@ -1,3 +1,15 @@
+/*
+    * Instead of relying on the ESP32 hardware SPI peripheral, the project implements a software-driven 
+    * SPI interface (**bit-banging**), giving full control over GPIO timing and communication behavior. 
+    * This approach makes the tool flexible for interacting with a wide range of external SPI flash chips 
+    * and low-level hardware targets.
+    * 
+    * The tool provides a serial command-line interface through `idf.py monitor`, allowing direct 
+    * interaction with flash devices using simple commands for reading memory, dumping firmware contents,
+    * and retrieving JEDEC manufacturer information.
+    * © santtos0x1 2026
+*/
+
 #include "cmd.h"
 #include "peri.h"
 #include "config.h"
@@ -56,7 +68,6 @@ void app_main(void)
     gpio_config_t di_io_conf = {
         .pin_bit_mask = (1ULL << spi_p.mosi) | (1ULL << spi_p.clk) 
         | (1ULL << spi_p.cs),
-
         .mode = GPIO_MODE_OUTPUT,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .pull_up_en = GPIO_PULLDOWN_ENABLE,

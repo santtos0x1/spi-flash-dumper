@@ -11,7 +11,7 @@
 
 #define DEFAULT_CHUNK_SIZE 256
 
-#define ADDR_DELAY_LM 4096
+#define ADDR_DELAY_LM 8096
 
 void spi_cs_toggle(uint8_t cs_level)
 {
@@ -101,10 +101,11 @@ void spi_get_manuf(void)
 
     // Disable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 1);
+    esp_rom_delay_us(1);
 
     // Print chip information
     printf(
-        "1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
+        "\n1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
         man_id_b,
         type_b,
         cap_b
@@ -124,7 +125,6 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
     // Enable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
     esp_rom_delay_us(1);
-
 
     if(fast_read)
     {
@@ -166,20 +166,20 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
         esp_rom_delay_us(1);
     }
 
-    printf("0x%06X: ", (unsigned int)addr);
+    printf("0x%06lx: ", addr);
 
     for(int i = 0; i < len; i++)
     {
         // Print received bytes
         printf("%02X ", ret_data[i]);
+        esp_rom_delay_us(1);
     }
-
-    esp_rom_delay_us(1);
 
     printf("\n");
 
     // Disable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 1);
+    esp_rom_delay_us(1);
 }
 
 // Dump full flash content
@@ -196,13 +196,12 @@ void spi_dump_cmd(uint32_t ic_capacity, uint16_t chunk_size, uint8_t  fast_read)
 
         // Read chunk data
         spi_read_addr(addr, chunk_size, fast_read);
-        esp_rom_delay_us(MS_TO_US(50));
+        esp_rom_delay_us(MS_TO_US(10));
 
         // Small delay
-        // Helps avoid watchdog trigger
         if (addr % ADDR_DELAY_LM == 0)
         {
-            esp_rom_delay_us(MS_TO_US(200));
+            esp_rom_delay_us(MS_TO_US(100));
         }
     }
 }

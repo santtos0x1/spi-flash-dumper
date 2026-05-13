@@ -46,21 +46,19 @@ void cli_init(uint8_t *idx, char *cmd_buff)
             &s_arg,
             &t_arg
         );
-        
-        //* printf("\nchar: %s\n", cmd_buff); CLI BUFFER DEBUG
 
         // Dump full flash
         if((strcmp(cmd, "dump") == 0) && (cmds_found >= 2))
         {        
             printf("\n");
             
-            printf("Press the BOOT button on ESP32 to interrupt dump!\n");
+            printf("Press BOOT button on ESP32 to interrupt dump!\n");
             esp_rom_delay_us(MS_TO_US(1000));
             
             if ((t_arg != 0) && (t_arg != 1))
             {
                 // Sets default value to t_arg (fast_read off);
-                printf("Fast read command invalid! Using fast read off\n");
+                printf("Fast read command invalid! Fast read off\n");
                 t_arg = 0;
             }
 
@@ -90,28 +88,20 @@ void cli_init(uint8_t *idx, char *cmd_buff)
         }
         else if((strcmp(cmd, "jedec") == 0) && cmds_found == 1) // Read JEDEC manufacturer ID
         {        
-            printf("\n");
-
             // Example: jedec
             spi_get_manuf();
         }
         else if((strcmp(cmd, "send") == 0) && cmds_found == 2)
         {
-            printf("\n");
-
             spi_send_data((uint8_t)f_arg);
         }
         else if ((strcmp(cmd, "cs") == 0) && cmds_found == 2)
         {
-            printf("\n");
-
             spi_cs_toggle((uint8_t)f_arg);
         }
         else if ((strcmp(cmd, "recv") == 0) && cmds_found == 1)
         {
-            printf("\n");
-
-            printf("Out-byte: 0x%02x", spi_recv_data());
+            printf("\nOut-byte: 0x%02x", spi_recv_data());
         }
         else // Default
         {
