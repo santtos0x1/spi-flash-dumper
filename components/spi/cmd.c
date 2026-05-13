@@ -10,19 +10,33 @@
 
 #define DEFAULT_CHUNK_SIZE 256
 
+#define ADDR_DELAY_LM 4096
+
+void spi_cs_toggle(uint8_t cs_level)
+{
+    if(cs_level)
+    {
+        gpio_set_level((gpio_num_t)spi_p.cs, 1);
+    }
+    else
+    {
+        gpio_set_level((gpio_num_t)spi_p.cs, 0);
+    }
+}
+
 // Send and receive one SPI byte using bit-banging
-uint8_t spi_send_data(uint8_t data)
+uint8_t spi_send_data(uint8_t addr)
 {
     // Stores received byte
-    uint8_t received_data = 0;
+    uint8_t ret_data = 0;
 
     // Sends 8 bits, MSB first
     for(int i = 7; i >= 0; i--)
     {
         // Set MOSI according current bit
         gpio_set_level(
-            (gpio_num_t) spi_p.mosi,
-            (data >> i) & 0x01
+            (gpio_num_t)spi_p.mosi,
+            (addr >> i) & 0x01
         );
 
         esp_rom_delay_us(5);
@@ -35,7 +49,7 @@ uint8_t spi_send_data(uint8_t data)
         if(gpio_get_level((gpio_num_t)spi_p.miso))
         {
             // Stores received bit
-            received_data |= (1 << i);
+            ret_data |= (1 << i);
         }
 
         // Clock LOW
@@ -44,7 +58,7 @@ uint8_t spi_send_data(uint8_t data)
     }
 
     // Return received SPI byte
-    return received_data;
+    return ret_data;
 }
 
 // Read JEDEC manufacturer information
@@ -75,7 +89,7 @@ void spi_get_manuf(void)
 
     // Print chip information
     printf(
-        "Manufacturer ID: %02X, Type: %02X, Capacity: %02X\n",
+        "1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
         man_id_b,
         type_b,
         cap_b
@@ -161,7 +175,7 @@ void spi_dump_cmd(uint32_t ic_capacity, uint16_t chunk_size, uint8_t  fast_read)
     {
         if (gpio_get_level(BOOT_GPIO0) == 0)
         {
-            printf("Flash dump stopped mannualy!\n");
+            printf("Dump interrupted!\n");
             break;
         }
 
@@ -169,9 +183,9 @@ void spi_dump_cmd(uint32_t ic_capacity, uint16_t chunk_size, uint8_t  fast_read)
         spi_read_addr(addr, chunk_size, fast_read);
         esp_rom_delay_us(MS_TO_US(50));
 
-        // Small delay every 4KB
+        // Small delay
         // Helps avoid watchdog trigger
-        if (addr % 4096 == 0)
+        if (addr % ADDR_DELAY_LM == 0)
         {
             esp_rom_delay_us(MS_TO_US(200));
         }

@@ -20,17 +20,17 @@ void cli_init(int *idx, char *cmd_buff)
     uint8_t t_arg = 0;
     
     // Read one character from terminal
-    int c = getchar();
+    int input_char = getchar();
     
     // No character received
-    if(c == EOF)
+    if(input_char == EOF)
     {
         esp_rom_delay_us(1);
         return;
     }
     
     // Execute command when ENTER is pressed
-    if((c == '\n' || c == '\r'))
+    if((input_char == '\n' || input_char == '\r'))
     {
         // End string with NULL terminator
         cmd_buff[*idx] = '\0';
@@ -45,6 +45,8 @@ void cli_init(int *idx, char *cmd_buff)
             &t_arg
         );
         
+        //* printf("\nchar: %s\n", cmd_buff); CLI BUFFER DEBUG
+
         // Dump full flash
         if((strcmp(cmd, "dump") == 0) && (cmds_found >= 2))
         {        
@@ -101,6 +103,12 @@ void cli_init(int *idx, char *cmd_buff)
                 printf("Out-byte: 0x%02x", r_data);
             }
         }
+        else if ((strcmp(cmd, "cs") == 0) && cmds_found == 2)
+        {
+            printf("\n");
+
+            spi_cs_toggle((uint8_t)f_arg);
+        }
         else // Default
         {
             printf("\nInvalid command!\n");
@@ -112,22 +120,22 @@ void cli_init(int *idx, char *cmd_buff)
     }
     
     // Handle backspace
-    if(((c == BACKSPACE_KEY || c == '\b') && *idx > 0))
+    if(((input_char == BACKSPACE_KEY || input_char == '\b') && *idx > 0))
     {
         (*idx)--;
     
         // Remove character from terminal
-        printf("\b\b");
+        printf("\b \b");
         return;
     }
     
     // Store character if buffer is not full
     if (*idx < CMD_BUF_SIZE - 1)
     {
-        cmd_buff[(*idx)++] = (char)c;
+        cmd_buff[(*idx)++] = (char)input_char;
     
         // Echo typed character
-        putchar(c);
+        putchar(input_char);
         fflush(stdout);
     }
 }
