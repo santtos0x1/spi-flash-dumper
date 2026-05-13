@@ -87,6 +87,12 @@ recv
 
 - Receive one byte.
 
+```bash
+cs 1/0
+```
+
+- Toggles Chip-Select pin.
+
 ### ⛔ Stopping the Dump Process
 
 To stop the dump process, press the **BOOT** button on the microcontroller board. The firmware continuously checks the BOOT button state during execution. When the button is pressed, the dump operation is safely interrupted and returns to command line.
