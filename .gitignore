@@ -14,7 +14,8 @@
 *.tmp
 
 *.todo
-.vscode
+.vscode/
+.devcontainer/
 
 # Log files
 *.log
