@@ -1,15 +1,17 @@
 #include "cli.h"
-#include "stdio.h"
-#include "string.h"
-#include "esp_rom_sys.h"
 #include "config.h"
 #include "cmd.h"
+
+#include <stdio.h>
+#include <stdint.h>
+#include "string.h"
+#include "esp_rom_sys.h"
 
 #define CMD_BUFFER_S 8
 
 #define BACKSPACE_KEY 127
 
-void cli_init(int *idx, char *cmd_buff)
+void cli_init(uint8_t *idx, char *cmd_buff)
 {
     // Command name buffer
     char cmd[CMD_BUFFER_S];

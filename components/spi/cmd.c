@@ -1,10 +1,11 @@
 #include "cmd.h"
-#include <stdint.h>
-#include "driver/gpio.h"
-#include "esp_rom_sys.h"
 #include "peri.h"
 #include "config.h"
+
+#include <stdint.h>
 #include <stdbool.h>
+#include "driver/gpio.h"
+#include "esp_rom_sys.h"
 
 #define BOOT_GPIO0 0
 

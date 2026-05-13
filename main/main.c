@@ -1,14 +1,15 @@
+#include "cmd.h"
+#include "peri.h"
+#include "config.h"
+#include "cli.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
-#include "cmd.h"
 #include "string.h"
 #include "esp_rom_sys.h"
-#include "peri.h"
-#include "config.h"
-#include "cli.h"
 #include "esp_task_wdt.h"
 
 // CLI task stack size
@@ -31,14 +32,14 @@ void vTaskCode(void *pvParameters)
     err = esp_task_wdt_delete(NULL);
     if(err != ESP_OK)
     {
-        printf("Watchdog is disabled for this task. Initializing CLI...\n");
+        printf("Watchdog is disabled for this task...\n");
     }
 
     // Buffer used to store terminal input
     char cmd_buff[CMD_BUF_SIZE];
 
     // Current buffer index
-    int idx = 0;
+    uint8_t idx = 0;
 
     for(;;)
     {
