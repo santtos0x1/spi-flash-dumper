@@ -1,6 +1,7 @@
 #include "cmd.h"
 #include "peri.h"
 #include "config.h"
+#include "jedec_db.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -77,10 +78,13 @@ uint8_t spi_recv_data(void)
 }
 
 // Read JEDEC manufacturer information
-void spi_get_manuf(void)
+void spi_get_jedec(void)
 {
-    uint8_t man_id_b, type_b, cap_b;
-    
+    const flash_chip_t *flash_ic_data = 0;
+    uint8_t man_id_b = 0;
+    uint8_t type_b = 0;
+    uint8_t cap_b = 0;
+
     // Enable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
     esp_rom_delay_us(1);
@@ -103,13 +107,22 @@ void spi_get_manuf(void)
     gpio_set_level((gpio_num_t)spi_p.cs, 1);
     esp_rom_delay_us(1);
 
-    // Print chip information
-    printf(
-        "\n1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
+    flash_ic_data = jedec_query_db(man_id_b, type_b, cap_b);
+
+    if(flash_ic_data != NULL)
+    {
+        // Print chip information
+        printf("\n%s - %s\n", flash_ic_data->manuf_name, flash_ic_data->model_name);
+    }
+    else
+    {
+        printf(
+        "Flash model not found in database!\n1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
         man_id_b,
         type_b,
         cap_b
-    );
+        );
+    }
 }
 
 // Read flash memory address

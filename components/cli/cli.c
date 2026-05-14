@@ -89,7 +89,7 @@ void cli_init(uint8_t *idx, char *cmd_buff)
         else if((strcmp(cmd, "jedec") == 0) && cmds_found == 1) // Read JEDEC manufacturer ID
         {        
             // Example: jedec
-            spi_get_manuf();
+            spi_get_jedec();
         }
         else if((strcmp(cmd, "send") == 0) && cmds_found == 2)
         {
