@@ -14,6 +14,8 @@
 
 #define ADDR_DELAY_LM 8096
 
+#define JEDEC_BYTES_LEN 3
+
 void spi_cs_toggle(uint8_t cs_level)
 {
     // Set Chip-Select level to 1 if cs_level == 1
@@ -77,13 +79,11 @@ uint8_t spi_recv_data(void)
     return recv_data;
 }
 
-// Read JEDEC manufacturer information
-void spi_get_jedec(void)
+// Read JEDEC manufacturer information and returns real flash capacity
+uint32_t spi_get_jedec(void)
 {
     const flash_chip_t *flash_ic_data = 0;
-    uint8_t man_id_b = 0;
-    uint8_t type_b = 0;
-    uint8_t cap_b = 0;
+    uint8_t jedec_bytes[JEDEC_BYTES_LEN];
 
     // Enable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 0);
@@ -93,36 +93,35 @@ void spi_get_jedec(void)
     spi_send_data(FLASH_JEDEC_BYTE);
     esp_rom_delay_us(1);
 
-    // Read JEDEC bytes
-    man_id_b = spi_recv_data();
-    esp_rom_delay_us(1);
-
-    type_b = spi_recv_data();
-    esp_rom_delay_us(1);
-    
-    cap_b = spi_recv_data();
-    esp_rom_delay_us(1);
+    for(uint8_t i = 0; i < JEDEC_BYTES_LEN; i++)
+    {
+        // Read JEDEC bytes
+        jedec_bytes[i] = spi_recv_data();
+        esp_rom_delay_us(1);
+    }
 
     // Disable chip select
     gpio_set_level((gpio_num_t)spi_p.cs, 1);
     esp_rom_delay_us(1);
 
-    flash_ic_data = jedec_query_db(man_id_b, type_b, cap_b);
+    flash_ic_data = jedec_query_db(jedec_bytes[0], jedec_bytes[1], jedec_bytes[2]);
 
     if(flash_ic_data != NULL)
     {
         // Print chip information
         printf("\n%s - %s\n", flash_ic_data->manuf_name, flash_ic_data->model_name);
+        
+        return flash_ic_data->capacity;
     }
     else
     {
         printf(
-        "Flash model not found in database!\n1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
-        man_id_b,
-        type_b,
-        cap_b
+            "Flash model not found in database!\n1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
+            jedec_bytes[0], jedec_bytes[1], jedec_bytes[2]
         );
     }
+
+    return 0;
 }
 
 // Read flash memory address
@@ -196,8 +195,13 @@ void spi_read_addr(uint32_t addr, uint16_t len, uint8_t fast_read)
 }
 
 // Dump full flash content
-void spi_dump_cmd(uint32_t ic_capacity, uint16_t chunk_size, uint8_t  fast_read)
+void spi_dump_cmd(uint32_t ic_capacity, uint16_t chunk_size, uint8_t fast_read)
 {
+    if(chunk_size == 0)
+    {
+        chunk_size = DEFAULT_CHUNK_SIZE;
+    }
+
     // Loop through entire flash
     for(uint32_t addr = 0; addr < ic_capacity; addr += chunk_size)
     {

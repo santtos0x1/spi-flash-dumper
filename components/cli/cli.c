@@ -48,7 +48,7 @@ void cli_init(uint8_t *idx, char *cmd_buff)
         );
 
         // Dump full flash
-        if((strcmp(cmd, "dump") == 0) && (cmds_found >= 2))
+        if((strcmp(cmd, "dump") == 0) && (cmds_found >= 1))
         {        
             printf("\n");
             
@@ -68,9 +68,19 @@ void cli_init(uint8_t *idx, char *cmd_buff)
                 esp_rom_delay_us(MS_TO_US(1000));
                 s_arg = 256;
             }
-            
-            // Example: dump 0x200000 256 1/0
-            spi_dump_cmd(f_arg, s_arg, t_arg);
+
+            if(f_arg == 0)
+            {
+                f_arg = spi_get_jedec();
+        
+                // Example: dump 0x200000 256 1/0
+                spi_dump_cmd(f_arg, s_arg, t_arg);
+            }
+            else
+            {
+                // Example: dump 0x200000 256 1/0
+                spi_dump_cmd(f_arg, s_arg, t_arg);
+            }
         }
         else if((strcmp(cmd, "read") == 0) && (cmds_found >= 2)) // Read specific flash address 
         {
