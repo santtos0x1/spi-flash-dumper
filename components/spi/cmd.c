@@ -120,7 +120,7 @@ uint32_t spi_get_jedec(void)
     else
     {
         printf(
-            "Flash model not found in database!\n1-byte: %02X, 2-byte: %02X, 3-byte: %02X\n",
+            "\nFlash not found!\nID: 0x%02X, Cap: 0x%02X, Type: 0x%02X\n",
             jedec_bytes[0], jedec_bytes[1], jedec_bytes[2]
         );
     }

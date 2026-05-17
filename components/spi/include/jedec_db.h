@@ -80,4 +80,5 @@ typedef struct
 
 const char *flash_manuf_to_string(flash_manuf_t manuf);
 const char *flash_model_to_string(flash_model_t model);
+
 const flash_chip_t *jedec_query_db(uint8_t manuf_id, uint8_t dev_type, uint8_t dev_cap);

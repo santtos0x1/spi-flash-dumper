@@ -1,5 +1,7 @@
 #include "jedec_db.h"
-#include "stdio.h"
+
+#include <stdio.h>
+
 const flash_chip_t flash_ics[] = {
     // ---- WINBOND ----
     {

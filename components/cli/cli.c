@@ -134,7 +134,7 @@ void cli_init(uint8_t *idx, char *cmd_buff)
     }
     
     // Store character if buffer is not full
-    if (*idx < CMD_BUF_SIZE - 1)
+    if (*idx < CMD_BUFF_SIZE - 1)
     {
         cmd_buff[(*idx)++] = (char)input_char;
     

@@ -31,7 +31,7 @@
 #define TASK_PRIORITY 3
 
 // Command buffer max size
-#define CMD_BUF_SIZE 64
+#define CMD_BUFF_SIZE 64
 
 // CLI task
 void vTaskCode(void *pvParameters)
@@ -48,7 +48,7 @@ void vTaskCode(void *pvParameters)
     }
 
     // Buffer used to store terminal input
-    char cmd_buff[CMD_BUF_SIZE];
+    char cmd_buff[CMD_BUFF_SIZE];
 
     // Current buffer index
     uint8_t idx = 0;
