@@ -1,5 +1,4 @@
-#ifndef CLI_H
-#define CLI_H
+#pragma once
 
 #include <stdint.h>
 
@@ -7,5 +6,3 @@
 #define CMD_BUF_SIZE 64
 
 void cli_init(uint8_t *idx, char *cmd_buff);
-
-#endif

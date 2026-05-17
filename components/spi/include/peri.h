@@ -1,5 +1,4 @@
-#ifndef PERI_H
-#define PERI_H
+#pragma once
 
 #include <stdint.h>
 
@@ -11,5 +10,3 @@ typedef struct {
 } spi_pins_t;
 
 extern const spi_pins_t spi_p;
-
-#endif
