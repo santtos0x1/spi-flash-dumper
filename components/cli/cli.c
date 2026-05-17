@@ -74,12 +74,12 @@ void cli_init(uint8_t *idx, char *cmd_buff)
                 f_arg = spi_get_jedec();
         
                 // Example: dump 0x200000 256 1/0
-                spi_dump_cmd(f_arg, s_arg, t_arg);
+                spi_dump_data(f_arg, s_arg, t_arg);
             }
             else
             {
                 // Example: dump 0x200000 256 1/0
-                spi_dump_cmd(f_arg, s_arg, t_arg);
+                spi_dump_data(f_arg, s_arg, t_arg);
             }
         }
         else if((strcmp(cmd, "read") == 0) && (cmds_found >= 2)) // Read specific flash address 
