@@ -109,7 +109,11 @@ uint32_t spi_get_jedec(void)
     if(flash_ic_data != NULL)
     {
         // Print chip information
-        printf("\n%s - %s\n", flash_ic_data->manuf_name, flash_ic_data->model_name);
+        printf(
+            "\n%s - %s\n", 
+            flash_manuf_to_string(flash_ic_data->manuf_name), 
+            flash_model_to_string(flash_ic_data->model_name)
+        );
         
         return flash_ic_data->capacity;
     }
