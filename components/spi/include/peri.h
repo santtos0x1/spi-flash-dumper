@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+// Hardware pins configuration
 typedef struct {
     uint8_t clk;
     uint8_t mosi;

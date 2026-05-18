@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+// Flash manufacturer enum database
 typedef enum {
     MANUF_WINBOND    = 0,
     MANUF_EON_SS_INC = 1,
@@ -14,6 +15,7 @@ typedef enum {
     MANUF_SPANSION   = 8,
 } flash_manuf_t;
 
+// Flash model enum database
 typedef enum {
     MODEL_W25Q128JV   = 0,
     MODEL_EN25F80     = 1,
@@ -66,6 +68,8 @@ typedef enum {
     MODEL_P25Q80H     = 34,
     MODEL_P25Q16H     = 35,
 } flash_model_t;
+
+// Flash chip metadata struct
 typedef struct
 {
     uint8_t manuf_id;
@@ -78,7 +82,11 @@ typedef struct
     uint8_t model_name;
 } flash_chip_t;
 
+// Converts flash manufacturer type to string
 const char *flash_manuf_to_string(flash_manuf_t manuf);
+
+// Converts flash model type to string
 const char *flash_model_to_string(flash_model_t model);
 
+// Searches for JEDEC bytes in the vector and returns the data if found, otherwise NULL.
 const flash_chip_t *jedec_query_db(uint8_t manuf_id, uint8_t dev_type, uint8_t dev_cap);

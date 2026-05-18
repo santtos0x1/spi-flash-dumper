@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+// Flash chip metadata database
 const flash_chip_t flash_ics[] = {
     // ---- WINBOND ----
     {
