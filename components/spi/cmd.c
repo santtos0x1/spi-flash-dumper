@@ -23,7 +23,7 @@ void spi_cs_toggle(uint8_t cs_level)
     {
         gpio_set_level((gpio_num_t)spi_p.cs, 1);
     }
-    else // Set Chip-Select level to 1 if cs_level == 0
+    else
     {
         gpio_set_level((gpio_num_t)spi_p.cs, 0);
     }
